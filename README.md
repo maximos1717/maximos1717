@@ -2,32 +2,56 @@ package main
 
 import (
 	"fmt"
-	"net/http"
+	"time"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	// Write the HTML response
-	html := `
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-	    <meta charset="UTF-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    <title>My Go Web App</title>
-	</head>
-	<body>
-	    <h1>Hello, Gophers!</h1>
-	</body>
-	</html>
-	`
-	fmt.Fprint(w, html)
+const (
+	expectedUsername = "nabil"
+	expectedPassword = "maxi"
+)
+
+func authenticate(username, password string) bool {
+	return username == expectedUsername && password == expectedPassword
 }
 
 func main() {
-	// Handle requests to the root path ("/") with the handler function
-	http.HandleFunc("/", handler)
+	// Demander à l'utilisateur de saisir le nom d'utilisateur
+	fmt.Print("Entrez le nom d'utilisateur : ")
+	var username string
+	fmt.Scanln(&username)
 
-	// Start the web server on port 8080
-	fmt.Println("Server is running on http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	// Demander à l'utilisateur de saisir le mot de passe
+	fmt.Print("Entrez le mot de passe : ")
+	var password string
+	fmt.Scanln(&password)
+
+	// Vérifier l'authentification
+	if authenticate(username, password) {
+		fmt.Println("Authentification réussie!")
+	} else {
+		fmt.Println("Nom d'utilisateur ou mot de passe incorrect.")
+		// Facultatif : vous pouvez quitter le programme ici si l'authentification échoue.
+		// os.Exit(1)
+	}
+
+	fmt.Println("Appuyez sur Enter pour démarrer le chronomètre.")
+	fmt.Scanln()
+
+	startTime := time.Now()
+
+	fmt.Println("Chronomètre démarré. Comptage de 1 à 100.")
+	countTo100()
+
+	endTime := time.Now()
+
+	duration := endTime.Sub(startTime)
+	fmt.Printf("Le chronomètre a fonctionné pendant : %s\n", duration)
+}
+
+// countTo100 effectue un comptage de 1 à 100.
+func countTo100() {
+	for i := 1; i <= 100; i++ {
+		fmt.Println(i)
+		time.Sleep(time.Second) // Attendez une seconde entre chaque nombre.
+	}
 }
